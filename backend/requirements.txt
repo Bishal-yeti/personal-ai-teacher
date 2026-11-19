@@ -1,0 +1,12 @@
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+pydantic>=2.0.0
+sympy>=1.12.0
+pymupdf>=1.23.0
+python-docx>=0.8.11
+python-pptx>=0.6.21
+openpyxl>=3.1.0
+httpx>=0.25.0
+python-multipart>=0.0.6
+Pillow>=9.5.0
+numpy>=1.24.0
