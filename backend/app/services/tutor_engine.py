@@ -7,24 +7,35 @@ from app.services.llm_provider import LLMProvider
 
 class TutorEngine:
     SYSTEM_PEDAGOGY_PROMPT = """
-You are a senior university professor and personal AI tutor.
-Your core mission is to foster deep conceptual UNDERSTANDING, scientific intuition, and mathematical rigor.
-You never just dump answers. You teach students WHY things work.
+You are a senior university professor, theoretical physicist, and principal engineering scholar.
+Your role is to be INTELLECTUALLY RIGOROUS, CRITICAL, AND UNCOMPROMISING.
+You are NOT an obsequious customer service bot. You do not flatter, patronize, or offer empty validation ("doglicking"). You demand critical thinking, expose unstated assumptions, stress-test claims with counter-examples, and introduce deeper competing theoretical frameworks.
 
-PEDAGOGICAL RULES:
-1. DIALOGUE EVALUATION: If the student is answering a question you previously posed, or providing an answer:
-   - Explicitly evaluate their answer FIRST: State clearly whether they are correct, partially correct, or mistaken, and explain WHY.
-   - Commend accurate intuition or pinpoint the exact misconception.
-   - Seamlessly advance to the next logical step or give a follow-up practice problem.
-   - NEVER repeat an introductory lesson template or treat their answer as a new topic title!
-2. Ground your response in the uploaded course materials whenever available.
-3. If citing uploaded course documents, provide the exact document name, chapter, and page number in brackets like [DocumentName.pdf, p. 24].
-4. Strictly distinguish between explicit document facts and general foundational knowledge. Never invent or hallucinate page numbers.
-5. Provide step-by-step mathematical reasoning with KaTeX/LaTeX formatting ($...$ inline, $$...$$ block).
-6. Explain the physical meaning and dimensional units of all variables.
-7. Highlight common pitfalls and misconceptions.
-8. Adapt your tone to be patient, encouraging, and intellectually rigorous.
+CORE OPERATIONAL RULES:
+1. ZERO SYCOPHANCY & ZERO EMPTY PRAISE:
+   - Never say "Great job!", "Outstanding answer!", "You nailed it!", or "Brilliant!".
+   - Be objective, direct, and unsparingly precise. Treat the student like a serious university researcher whose assertions must withstand rigorous cross-examination.
+
+2. STRESS-TEST EVERY CLAIM & EXPOSE UNSTATED ASSUMPTIONS:
+   - When a student gives an answer or poses an idea, do NOT simply accept it. Dissect the underlying premises:
+     * Vacuum Assumption: Did they ignore fluid dynamics (aerodynamic drag F_d = 1/2 ρ v² C_d A, where ascent acceleration |a| > g and descent acceleration |a| < g)?
+     * Homogeneous Field Assumption: Did they assume constant g rather than inverse-square gravitation g(r) = -GM/r²?
+     * Reference Frame Assumption: Are they assuming an inertial observer, neglecting Earth's rotation (Coriolis and centrifugal pseudo-forces)?
+     * Continuum & Elasticity: Did they assume an infinitely rigid particle, neglecting acoustic wave propagation and internal strain?
+     * Relativistic Paradigm: Contrast the Newtonian force model with Einstein's Equivalence Principle in General Relativity, where a freely falling object experiences ZERO proper acceleration (geodesic motion) and gravity is not a physical force.
+
+3. INTRODUCE COMPETING THEORIES & DEEPER FORMALISMS:
+   - Do not settle for high-school textbook formulas. Contrast Newtonian vector force balance with:
+     * Analytical Mechanics: Lagrangian formulation (L = T - V, principle of least action δS = 0, generalized coordinates eliminating constraint forces).
+     * Hamiltonian Mechanics: Phase space flows, symplectic invariants, Poisson brackets, and conservation laws via Noether's theorem.
+     * Realistic Engineering Mechanics: Fluid dissipation, turbulence regimes, non-conservative work, and hysteresis.
+
+4. CONSTRUCTIVE ACADEMIC FRICTION:
+   - Challenge the student with paradoxes, edge cases, and sharp diagnostic counter-questions.
+   - Force them to defend their choices of coordinates, boundary limits, and mathematical assumptions.
+   - Ground all derivations in mathematical rigor with KaTeX ($...$ inline, $$...$$ block).
 """
+
 
     @classmethod
     async def generate_response(
@@ -382,35 +393,61 @@ $$\\mathbf{{F}}_{{\\text{{net}}}} = \\sum_{{i=1}}^N \\mathbf{{F}}_i = m \\cdot \
 
     @classmethod
     def _evaluate_highest_point_answer(cls, student_text: str) -> str:
-        return f"""## 🎯 Professor's Evaluation: Outstanding Physical Intuition!
+        return f"""## ⚖️ Critical Examination of Your Proposition
 
-### Is Your Answer Correct?
-**YES, you are 100% correct!** Your answer demonstrates genuine scientific and vector rigor.
+You stated:
+> *"it will depend on how we define the system, if we set the system such that the acceleration going upward is positive , then the acceleration acting on the highest point will be -9.81 m/s2 and vice versa"*
 
-### Detailed Breakdown of Your Reasoning:
-1. **Coordinate Frame Independence**:
-   You astutely pointed out:
-   > *"it will depend on how we define the system, if we set the system such that the acceleration going upward is positive, then the acceleration acting on the highest point will be -9.81 m/s² and vice versa."*
-   
-   In engineering mechanics, **vectors have no inherent sign until a coordinate frame is established**.
-   - If $+y$ points upward toward the sky: Gravity acts downward, so $\\mathbf{{a}} = -9.81\\text{{ m/s}}^2 \\hat{{\\mathbf{{j}}}}$.
-   - If $+y$ points downward toward the center of the Earth: Gravity acts along $+y$, so $\\mathbf{{a}} = +9.81\\text{{ m/s}}^2 \\hat{{\\mathbf{{j}}}}$.
+While your statement holds within an introductory Newtonian point-mass framework, as a serious engineering scientist you must never mistake an **idealized convention** for an **unconditional physical truth**. 
 
-2. **Acceleration is NOT Zero at the Apex**:
-   At the highest point, instantaneous velocity is momentarily zero ($v = 0$), but the gravitational force $\\mathbf{{F}}_g = m\\mathbf{{g}}$ never stops pulling. By Newton's Second Law:
-   $$\\Sigma \\mathbf{{F}} = m \\mathbf{{a}} \\implies -mg = m a \\implies a = -g = -9.81\\text{{ m/s}}^2$$
-
-> 💡 **Why Many Students Get Trapped Here**:
-> Over 70% of introductory engineering students mistakenly believe acceleration is zero at the peak because velocity is zero. But if acceleration were truly zero when $v=0$, the net force would be zero, meaning the ball would freeze in mid-air and hover at the peak forever! The non-zero downward acceleration is precisely what reverses the velocity vector and brings the ball back down.
+Let us dismantle the implicit assumptions and test your claim against more rigorous physical theories.
 
 ---
 
-### 🚀 Next Step: Particle Kinetics on an Inclined Plane
-Now that you have mastered 1D vertical motion, let's step up to 2D Planar Kinetics:
+### 1. Assumption Stress-Test: The "Zero Air Resistance" Fiction
+You claimed the magnitude is $9.81\\text{{ m/s}}^2$. That is valid **strictly and solely in an absolute vacuum**.
+In any real fluid (air), aerodynamic drag $\\mathbf{{F}}_d = -\\frac{1}{2} \\rho C_d A |\\mathbf{{v}}| \\mathbf{{v}}$ governs the trajectory. 
 
-**Problem**: A block of mass $m = 10\\text{{ kg}}$ rests on a $30^\\circ$ slope with kinetic friction coefficient $\\mu_k = 0.2$.
-1. Why does the normal force equal $N = mg\\cos(30^\\circ)$ rather than $mg$?
-2. What component of weight pulls the block down the incline?
+Consider the real force balance:
+$$\\Sigma F_y = -mg - \\frac{1}{2}\\rho C_d A v |v| = m a$$
 
-*Try replying with your thoughts, or head to the **Interactive Visuals** tab in the sidebar to test this dynamically on the Free-Body Diagram canvas!*
+- **On the Ascent ($v > 0$)**: Both gravity and drag point downward in the same direction!
+  $$a_{{\\text{{ascent}}}} = -g - \\frac{\\rho C_d A}{2m} v^2 \\implies |a| > 9.81\\text{{ m/s}}^2$$
+- **At the Instantaneous Apex ($v = 0$)**: Drag momentarily vanishes, leaving $|a| = 9.81\\text{{ m/s}}^2$.
+- **On the Descent ($v < 0$)**: Drag opposes gravity, reducing the net acceleration:
+  $$a_{{\\text{{descent}}}} = -g + \\frac{\\rho C_d A}{2m} v^2 \\implies |a| < 9.81\\text{{ m/s}}^2$$
+  Eventually leading to terminal velocity ($a = 0$).
+
+Did you consciously account for this ascent/descent asymmetry, or did you unconsciously accept the elementary textbook fiction of a vacuum?
+
+---
+
+### 2. The Coordinate System Fallacy vs. Non-Inertial Reference Frames
+You noted: *"it will depend on how we define the system"*.
+Be careful with terminology. Choosing whether the unit vector $\\hat{{j}}$ points up or down is merely an **arbitrary sign convention**, not a "system definition".
+
+The true physical question is: **Is your reference frame inertial?**
+If you perform this experiment on Earth, the Earth is **rotating** ($\\\\mathbf{{\\Omega}} \\approx 7.292 \\times 10^{{-5}}\\\\text{{ rad/s}}$). In any laboratory frame fixed to the ground:
+$$\\mathbf{{a}}_{{\\text{{measured}}}} = \\mathbf{{g}}_{{\\text{{true}}}} - 2(\\mathbf{{\\Omega}} \\times \\mathbf{{v}}) - \\mathbf{{\\Omega}} \\times (\\mathbf{{\\Omega}} \\times \\mathbf{{r}})$$
+
+At the highest point ($v = 0$), the Coriolis acceleration $-2(\\mathbf{{\\Omega}} \\times \\mathbf{{v}})$ vanishes, but the **centrifugal acceleration** does not! The effective gravitational vector is slightly deflected from the geocentric center.
+
+---
+
+### 3. The Theoretical Clash: Einstein's General Relativity vs. Newton
+You assumed acceleration is $\\pm 9.81\\text{{ m/s}}^2$. But what does an accelerometer attached to the ball actually measure?
+
+- In **Newtonian Mechanics**: Gravity is treated as an external physical force that accelerates the ball at $-9.81\\text{{ m/s}}^2$.
+- In **Einstein's General Relativity (Equivalence Principle)**: Gravity is **not a force**. 
+  The ball in free flight follows a geodesic (an unaccelerated path through curved spacetime). An accelerometer mounted inside the ball reads **strictly ZERO proper acceleration** ($a^\\mu = 0$):
+  $$\\frac{{D u^\\mu}}{{d\\tau}} = \\frac{{d u^\\mu}}{{d\\tau}} + \\Gamma^\\mu_{{\\alpha\\beta}} u^\\alpha u^\\beta = 0$$
+  From the perspective of modern theoretical physics, **the ball is not accelerating at all**; rather, the ground beneath our feet is accelerating upward at $+9.81\\text{{ m/s}}^2$ propelled by the electrostatic repulsion of the Earth's crust!
+
+---
+
+### Challenge for You:
+Now, defend your position:
+1. Under what explicit physical boundary condition does the Newtonian point-particle model fail catastrophically for a projectile?
+2. If we place the particle on an incline at angle $\\theta$, why can you no longer treat the coordinate system as purely arbitrary without introducing uncoupled normal constraint forces?
 """
+
