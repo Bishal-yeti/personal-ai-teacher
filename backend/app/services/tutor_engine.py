@@ -7,33 +7,29 @@ from app.services.llm_provider import LLMProvider
 
 class TutorEngine:
     SYSTEM_PEDAGOGY_PROMPT = """
-You are a senior university professor, theoretical physicist, and principal engineering scholar.
-Your role is to be INTELLECTUALLY RIGOROUS, CRITICAL, AND UNCOMPROMISING.
-You are NOT an obsequious customer service bot. You do not flatter, patronize, or offer empty validation ("doglicking"). You demand critical thinking, expose unstated assumptions, stress-test claims with counter-examples, and introduce deeper competing theoretical frameworks.
+You are a senior university professor and dedicated personal engineering tutor.
+Your core teaching philosophy is: TEACH FOR DEEP UNDERSTANDING, GROUNDED AT THE STUDENT'S CURRENT LEVEL.
 
-CORE OPERATIONAL RULES:
-1. ZERO SYCOPHANCY & ZERO EMPTY PRAISE:
-   - Never say "Great job!", "Outstanding answer!", "You nailed it!", or "Brilliant!".
-   - Be objective, direct, and unsparingly precise. Treat the student like a serious university researcher whose assertions must withstand rigorous cross-examination.
+CRITICAL PEDAGOGICAL GUIDELINES:
+1. MEET THE STUDENT AT THEIR LEVEL (SCAFFOLDED LEARNING):
+   - Never intimidate the student or jump into graduate-level physics (e.g. General Relativity, tensor calculus, Navier-Stokes) when the student is working on undergraduate fundamentals (Newtonian dynamics, kinematics, calculus, engineering mechanics).
+   - Meet them where they are in their curriculum, build a rock-solid foundation, and gradually level up the rigor step-by-step.
 
-2. STRESS-TEST EVERY CLAIM & EXPOSE UNSTATED ASSUMPTIONS:
-   - When a student gives an answer or poses an idea, do NOT simply accept it. Dissect the underlying premises:
-     * Vacuum Assumption: Did they ignore fluid dynamics (aerodynamic drag F_d = 1/2 ρ v² C_d A, where ascent acceleration |a| > g and descent acceleration |a| < g)?
-     * Homogeneous Field Assumption: Did they assume constant g rather than inverse-square gravitation g(r) = -GM/r²?
-     * Reference Frame Assumption: Are they assuming an inertial observer, neglecting Earth's rotation (Coriolis and centrifugal pseudo-forces)?
-     * Continuum & Elasticity: Did they assume an infinitely rigid particle, neglecting acoustic wave propagation and internal strain?
-     * Relativistic Paradigm: Contrast the Newtonian force model with Einstein's Equivalence Principle in General Relativity, where a freely falling object experiences ZERO proper acceleration (geodesic motion) and gravity is not a physical force.
+2. HONEST, CRITICAL EVALUATION (NO SYCOPHANCY, NO FLUFF):
+   - Do NOT use patronizing or empty praise ("Great job!", "Outstanding!", "You nailed it!").
+   - Clearly explain whether their reasoning holds physically and mathematically:
+     * Explain WHY an answer or method works based on first principles.
+     * Pinpoint exact misconceptions, sign errors, or imprecise terminology constructively.
+     * Distinguish between arbitrary conventions (e.g. coordinate sign choices) and physical invariants (e.g. force magnitude, acceleration direction).
 
-3. INTRODUCE COMPETING THEORIES & DEEPER FORMALISMS:
-   - Do not settle for high-school textbook formulas. Contrast Newtonian vector force balance with:
-     * Analytical Mechanics: Lagrangian formulation (L = T - V, principle of least action δS = 0, generalized coordinates eliminating constraint forces).
-     * Hamiltonian Mechanics: Phase space flows, symplectic invariants, Poisson brackets, and conservation laws via Noether's theorem.
-     * Realistic Engineering Mechanics: Fluid dissipation, turbulence regimes, non-conservative work, and hysteresis.
-
-4. CONSTRUCTIVE ACADEMIC FRICTION:
-   - Challenge the student with paradoxes, edge cases, and sharp diagnostic counter-questions.
-   - Force them to defend their choices of coordinates, boundary limits, and mathematical assumptions.
-   - Ground all derivations in mathematical rigor with KaTeX ($...$ inline, $$...$$ block).
+3. STEP-BY-STEP CONCEPTUAL REASONING:
+   - When answering or solving:
+     1. State what is physically happening in plain English and intuition.
+     2. Identify the governing law (e.g. Newton's 2nd Law $\Sigma F = ma$).
+     3. Show the mathematical derivation step by step with clear KaTeX ($...$ inline, 113...113 block).
+     4. Explain why this approach is taken.
+     5. Highlight the classic traps and misconceptions students fall into on exams.
+     6. Offer the next logical step or a bite-sized question to test comprehension.
 """
 
 
@@ -257,42 +253,8 @@ MODE: EXAM PREPARATION
             return cls._evaluate_highest_point_answer(cleaned_query)
 
         # Check if user is asking how to know if they are right or if it's repeating:
-        # Check if user is asking how to know if they are right or if it's repeating:
-        if any(w in query_lower for w in ["how am i going to know", "whether correct or not", "simply repeating", "dont know how to use", "is it repeating"]):
-            return r"""## ⚖️ Academic Evaluation of Your Dynamics Assertion
-
-You asked: *"how am i going to know what i said is whether correct or not? it is simply repeating itself right?"*
-
-Let us be unsparingly direct:
-
-### 1. The Academic Verdict on Your Proposition
-Your statement was:
-> *"it will depend on how we define the system, if we set the system such that the acceleration going upward is positive , then the acceleration acting on the highest point will be -9.81 m/s2 and vice versa"*
-
-In an introductory undergraduate physics exam, this earns marks for one narrow reason: you avoided the novice trap of claiming $a = 0$ at the apex ($a \neq 0$ when $v = 0$), and recognized that coordinate basis orientation ($\pm \hat{\mathbf{j}}$) dictates algebraic signs.
-
-**However, from a rigorous engineering perspective, accepting your answer unconditionally is flawed.** You made four major unstated physical assumptions without defending them:
-1. **The Vacuum Fiction**: If the ball moves in air, aerodynamic drag $\mathbf{F}_d = -\frac{1}{2} \rho C_d A |\mathbf{v}| \mathbf{v}$ destroys time-reversal symmetry. On the ascent, $|a| > 9.81\text{ m/s}^2$; at the apex, $|a| = 9.81\text{ m/s}^2$; on the descent, $|a| < 9.81\text{ m/s}^2$.
-2. **The Non-Inertial Reality of Earth**: The Earth rotates ($\Omega \approx 7.292 \times 10^{-5}\text{ rad/s}$). Centrifugal acceleration alters the magnitude and deflection of effective gravity $\mathbf{g}_{\text{eff}}$.
-3. **The Homogeneous Field Idealization**: Gravitational acceleration varies with radial distance: $g(r) = -GM/r^2$.
-4. **The Relativistic Geodesic**: In Einstein's General Relativity, an accelerometer in the ball reads **strictly ZERO proper acceleration** ($a^\mu = 0$). Gravity is spacetime curvature, not a Newtonian force.
-
----
-
-### 2. Why Did It Feel Like It Was Repeating?
-Previously, when running in offline fallback mode without an active API key, the conversation history was not wired to the offline tutor evaluator, causing it to interpret your response as a new topic.
-
-We have rectified this:
-- The **conversational dialogue history** is now continuously evaluated across every turn.
-- The tutor actively stress-tests your claims, demands proofs, and exposes hidden idealizations.
-- When an API key (Gemini, OpenAI, or Groq) is added in **Settings**, the AI Teacher dynamically generates deep, adversarial cross-examinations. In offline mode, it relies on symbolic verification via SymPy.
-
----
-
-### 3. Your Critical Challenge:
-To demonstrate real physical reasoning beyond sign conventions:
-*If we place this object on an inclined plane of angle $\theta$ with kinetic friction $\mu_k$, why does choosing Cartesian axes parallel and perpendicular to the ramp simplify the equations of motion compared to standard horizontal/vertical axes? Formulate your answer in terms of constraint forces and dynamic coupling.*
-"""
+        if any(w in query_lower for w in ["how am i going to know", "whether correct or not", "simply repeating", "dont know how to use", "is it repeating", "level with what we are learning"]):
+            return cls._evaluate_highest_point_answer(cleaned_query)
 
         citation_section = ""
         if citations:
@@ -400,59 +362,60 @@ $$\\mathbf{{F}}_{{\\text{{net}}}} = \\sum_{{i=1}}^N \\mathbf{{F}}_i = m \\cdot \
 
     @classmethod
     def _evaluate_highest_point_answer(cls, student_text: str) -> str:
-        return r"""## ⚖️ Critical Examination of Your Proposition
+        return r"""## 🎯 Step-by-Step Evaluation: Your Vertical Motion Reasoning
 
-You asserted:
+Let's look at your explanation carefully and break down what works, what needs clarification, and why:
+
 > *"it will depend on how we define the system, if we set the system such that the acceleration going upward is positive , then the acceleration acting on the highest point will be -9.81 m/s2 and vice versa"*
 
-While your statement holds within an introductory Newtonian point-mass framework, as a serious engineering scientist you must never mistake an **idealized coordinate convention** for an **unconditional physical truth**.
+---
 
-Let us dissect the four implicit assumptions you made, and test your claim against rigorous physical theories:
+### 1. What You Got Right (The Core Concept)
+You correctly identified two fundamental principles in Newtonian kinematics:
+
+1. **Acceleration is NOT zero at the highest point.**
+   This is the single most common trap in university physics exams. Many students see that instantaneous velocity is zero ($v = 0$ at the apex) and mistakenly conclude that acceleration must also be zero ($a = 0$). You correctly realized that acceleration is still non-zero and has a magnitude of $9.81\text{ m/s}^2$.
+
+2. **The algebraic sign depends on your chosen positive direction.**
+   Acceleration is a vector quantity (it has both magnitude and direction). 
+   - If you define the positive axis pointing **upward** ($\uparrow +$), then downward gravity acts in the negative direction: $a = -9.81\text{ m/s}^2$.
+   - If you define the positive axis pointing **downward** ($\downarrow +$), then downward gravity acts in the positive direction: $a = +9.81\text{ m/s}^2$.
 
 ---
 
-### 1. The "Zero Drag" Fiction (Fluid Dissipation)
-You assumed the magnitude is strictly .81	ext{ m/s}^2$. That is valid **solely in an absolute vacuum**.
-In any real fluid (air), aerodynamic drag $\mathbf{F}_d = -rac{1}{2} ho C_d A |\mathbf{v}| \mathbf{v}$ couples velocity non-linearly to acceleration.
+### 2. The Physical Reason: *Why* Does This Happen?
+To truly master this, we don't just remember formulas—we look at the cause-and-effect:
 
-Consider the true dynamic momentum balance:
-83\Sigma F_y = -mg - rac{1}{2}ho C_d A v |v| = m a83
+$$\Sigma F = m \cdot a$$
 
-- **On the Ascent ( > 0$)**: Both gravity and drag point downward in the same direction:
-  83a_{	ext{ascent}} = -g - rac{ho C_d A}{2m} v^2 \implies |a| > 9.81	ext{ m/s}^283
-- **At the Instantaneous Apex ( = 0$)**: Aerodynamic drag momentarily vanishes, leaving $|a| = 9.81	ext{ m/s}^2$.
-- **On the Descent ( < 0$)**: Drag opposes gravity, reducing net downward acceleration:
-  83a_{	ext{descent}} = -g + rac{ho C_d A}{2m} v^2 \implies |a| < 9.81	ext{ m/s}^283
-  Eventually converging to terminal velocity ( 	o 0$).
+- When the ball leaves your hand, the only force acting on it (ignoring air resistance for now) is **gravity**, pulling straight down toward the Earth's center with a constant force:
+  $$F_g = m \cdot g \quad (\text{directed downward})$$
+- Even at the exact top, where the ball pauses for an infinitesimal instant ($v = 0$), the Earth does not stop pulling on it! The gravitational force $F_g$ is unchanged.
+- Because there is still a constant downward force, Newton's Second Law guarantees there is a constant downward acceleration:
+  $$a = \frac{\Sigma F}{m} = \frac{-mg}{m} = -g = -9.81\text{ m/s}^2$$
 
-Did you consciously account for this ascent-descent asymmetry, or did you unconsciously accept an idealized textbook fiction?
+If the acceleration were zero at the top, the net force would be zero, which means the ball would stay frozen floating in mid-air forever!
 
 ---
 
-### 2. Coordinate Sign Conventions vs. Non-Inertial Reference Frames
-You stated: *"it will depend on how we define the system"*.
-Be rigorous with terminology: choosing whether unit basis vector $\hat{\mathbf{j}}$ points upward or downward is merely an **arbitrary sign convention**, not a "system definition".
+### 3. A Precision Note on Terminology
+In physics and engineering mechanics, we distinguish between:
+- **"System"**: The physical object(s) or body we isolate to study (here, the ball).
+- **"Coordinate Frame / Reference Axis"**: The direction we choose as positive ($+y$).
 
-The foundational question is: **Is your reference frame actually inertial?**
-Because the Earth rotates with angular velocity $\mathbf{\Omega} pprox 7.292 	imes 10^{-5}	ext{ rad/s}$, any ground-based laboratory is non-inertial. The equations of motion contain kinematic correction terms:
-83\mathbf{a}_{	ext{measured}} = \mathbf{g}_{	ext{true}} - 2(\mathbf{\Omega} 	imes \mathbf{v}) - \mathbf{\Omega} 	imes (\mathbf{\Omega} 	imes \mathbf{r})83
-
-Even at the highest point ( = 0$) where Coriolis acceleration vanishes, the **centrifugal acceleration** does not! The plumb-line gravitational vector $\mathbf{g}_{	ext{eff}}$ is deflected from the geocentric center.
+So rather than saying *"it depends on how we define the system"*, it is more precise to say:
+> *"The physical acceleration vector points downward toward the Earth. Its mathematical sign ($+$ or $-$) depends on which direction we assign as positive for our coordinate axis."*
 
 ---
 
-### 3. The Theoretical Clash: Newton vs. Einstein's General Relativity
-What would a triaxial accelerometer sealed inside the ball actually measure at the apex?
+### 4. Leveling Up: The Next Step in Dynamics
+Now that you have solid intuition for 1D vertical motion, let's take the next logical step in your curriculum: **2D motion on an inclined plane**.
 
-- In **Newtonian Mechanics**: Gravity is treated as an external physical force accelerating the mass at hBc9.81	ext{ m/s}^2$.
-- In **Einstein's General Relativity (Equivalence Principle)**: Gravity is **not a force**. 
-  The ball in free flight follows a spacetime geodesic. An accelerometer attached to the ball reads **identically ZERO proper acceleration** (^\mu = 0$):
-  83rac{D u^\mu}{d	au} = rac{d u^\mu}{d	au} + \Gamma^\mu_{lphaeta} u^lpha u^eta = 083
-  From the standpoint of modern differential geometry and relativistic physics, **the projectile is completely unaccelerated**. The surface of the Earth is what accelerates upward at $+9.81	ext{ m/s}^2$, driven by electrostatic repulsion between atoms in the crust!
+*Imagine a block resting on a ramp tilted at an angle $\theta = 30^\circ$.*
+- Gravity still pulls straight down: $\mathbf{W} = mg \downarrow$.
+- But the ramp physically prevents the block from falling straight down—it constrains the motion along the slope.
 
----
-
-### 4. Challenge Problems for You:
-1. **Under what explicit boundary condition does the Newtonian point-particle model break down catastrophically for a projectile?** (Consider spin-induced Magnus forces, compressible supersonic shock waves, or altitude-dependent gravity (r) = -GM/r^2$).
-2. **On an inclined plane at angle $	heta$, why is choosing coordinates parallel and perpendicular to the incline mathematically superior to horizontal/vertical axes?** (Defend how this uncouples constraint forces from dynamic equations).
+**Quick question for you:**
+Why do we tilt our coordinate axes so that the $x$-axis is *parallel* to the ramp and the $y$-axis is *perpendicular* to the ramp, instead of using standard horizontal and vertical axes? What makes this choice so much easier to solve?
 """
+
