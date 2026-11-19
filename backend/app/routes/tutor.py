@@ -92,12 +92,22 @@ async def send_chat_message(msg: MessageSend):
     """, (user_msg_id, msg.conversation_id, msg.content, active_mode, now))
     conn.commit()
 
+    # Fetch recent conversation history prior to this message
+    cursor.execute("""
+        SELECT role, content FROM messages
+        WHERE conversation_id = ? AND id != ?
+        ORDER BY created_at ASC
+    """, (msg.conversation_id, user_msg_id))
+    history = [dict(r) for r in cursor.fetchall()]
+
     # Generate teacher response
     response_data = await TutorEngine.generate_response(
         course_id=course_id,
         user_message=msg.content,
-        mode=active_mode
+        mode=active_mode,
+        conversation_history=history
     )
+
 
     assistant_msg_id = f"msg-{uuid.uuid4().hex[:8]}"
     now_asst = datetime.utcnow().isoformat()
